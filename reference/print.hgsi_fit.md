@@ -44,5 +44,5 @@ print(fit)
 #>   models       : YLD=gblup
 #>   n individuals: 5
 #>   parents      : 5 ranked
-#>   fit file     : /tmp/RtmpkEJRPy/hgsi_fit.rds
+#>   fit file     : /tmp/RtmphGKS2F/hgsi_fit.rds
 ```
