@@ -1,0 +1,406 @@
+# Single-trait identification of genes carrying superior haplotypes
+
+Runs reference and genotype preparation, candidate-gene definition (GWAS
+LD windows or a gene list), haplotype construction, association testing,
+the superior-haplotype gates (with BH-FDR), functional annotation of the
+publication table and, optionally, GO enrichment, for ONE trait. Results
+are written to \`output_dir\`. To analyse several traits call this
+function once per trait with distinct \`trait_col\` / \`output_dir\`.
+
+## Usage
+
+``` r
+haplobreed_analysis(
+  plink_prefix = NULL,
+  plink_path = "plink",
+  ref_alt = NULL,
+  harmonize_strand = TRUE,
+  drop_ambiguous = FALSE,
+  gff3 = NULL,
+  cds = NULL,
+  pep = NULL,
+  genome_fasta = NULL,
+  reference_source = c("local", "msu7", "rapdb", "ensembl"),
+  crop_species = NULL,
+  crop_assembly = NULL,
+  ensembl_release = NULL,
+  reference_cache = NULL,
+  pheno_id_col = "ID",
+  on_fail = c("stop", "warn"),
+  qc_report_dir = NULL,
+  skip_validation = FALSE,
+  work_dir = tempdir(),
+  gwas_snps = NULL,
+  gene_list = NULL,
+  phenotype_data,
+  trait_col,
+  trait_label = NULL,
+  direction = c("higher", "lower"),
+  phenotype_type = c("single_env", "blup", "blue"),
+  pc_cols = c("PC1", "PC2", "PC3", "PC4", "PC5"),
+  subpop_col = "Subpopulation",
+  posthoc = c("tukey", "duncan"),
+  n_perm = 1000,
+  n_boot = 1000,
+  min_cohens_d = 0.3,
+  alpha = 0.05,
+  trait_threshold = NULL,
+  use_all_transcripts = TRUE,
+  regions_to_include = c("CDS_nonsynonymous", "5UTR", "3UTR"),
+  max_miss_snp = 0.2,
+  maf_min = 0.05,
+  max_het_ind = 0.1,
+  max_miss_ind = 0.1,
+  min_individuals_qc = 10,
+  min_ind_per_hap = 3,
+  min_hap_freq = 0,
+  ld_decay_distance = NULL,
+  ld_decay_file = NULL,
+  output_dir = "HaploBreedR_results",
+  save_only_superior = TRUE,
+  keep_intergenic = TRUE,
+  figure_formats = c("pdf", "tiff", "png"),
+  aa_full_names = TRUE,
+  gwas_snp_col = "SNP",
+  gwas_pos_col = "Position",
+  gwas_chr_col = "Chromosome",
+  require_fdr = TRUE,
+  plot_style = c("gene_list", "per_gene", "both", "none"),
+  plot_palette = "haplobreed",
+  plot_theme = "haplobreed",
+  plot_table_style = c("color_coded", "row_highlight"),
+  plot_panels = c("gene_model", "haplotype_network", "haplotype_table", "trait_boxplot"),
+  plot_width = 11,
+  plot_height = 13,
+  plot_combined_pdf = TRUE,
+  go_enrichment = FALSE,
+  go_enrichment_source = c("msu7", "rapdb"),
+  go_enrichment_min_term = 5L,
+  go_enrichment_min_superior = 2L,
+  go_enrichment_cache = NULL,
+  save_breeding_rds = TRUE,
+  rds_compress = c("fast", "none", "xz"),
+  rds_reference = c("embedded", "separate", "none"),
+  save_plot = TRUE,
+  store_all_results = FALSE,
+  verbose = TRUE
+)
+```
+
+## Arguments
+
+- plink_prefix:
+
+  PLINK file prefix (no extension). \`.bed\`, \`.bim\`, \`.fam\`, and a
+  \`.raw\` file are required.
+
+- plink_path:
+
+  Path to the PLINK executable.
+
+- ref_alt:
+
+  Optional \`data.frame\` with columns \`SNP, CHR, POS, REF, ALT\`.
+
+- harmonize_strand:
+
+  Correct REF/ALT against the reference genome.
+
+- drop_ambiguous:
+
+  Drop A/T and C/G variants after harmonization.
+
+- gff3, cds, pep, genome_fasta:
+
+  Local reference file paths. Any left \`NULL\` is fetched from
+  \`reference_source\`.
+
+- reference_source:
+
+  One of \`"local"\`, \`"msu7"\`, \`"rapdb"\`, \`"ensembl"\`.
+
+- crop_species, crop_assembly:
+
+  Ensembl Plants species and assembly.
+
+- ensembl_release:
+
+  Ensembl Plants release. \`NULL\` queries the current release.
+
+- reference_cache:
+
+  Cache directory for downloaded reference files.
+
+- pheno_id_col:
+
+  ID column in \`phenotype_data\`.
+
+- on_fail:
+
+  One of \`"stop"\` or \`"warn"\` on compatibility failure.
+
+- qc_report_dir:
+
+  Directory for the input-QC report.
+
+- skip_validation:
+
+  Skip compatibility and ID-overlap checks.
+
+- work_dir:
+
+  Directory for intermediate files.
+
+- gwas_snps:
+
+  GWAS hit table. Mutually exclusive with \`gene_list\`.
+
+- gene_list:
+
+  Character vector of gene IDs. Direct-gene mode.
+
+- phenotype_data:
+
+  Phenotype table with an ID and the trait column.
+
+- trait_col:
+
+  Trait column name. Exactly one trait per run.
+
+- trait_label:
+
+  Human-readable trait label for figures.
+
+- direction:
+
+  One of \`"higher"\` or \`"lower"\`.
+
+- phenotype_type:
+
+  One of \`"single_env"\`, \`"blup"\`, \`"blue"\`.
+
+- pc_cols:
+
+  Principal-component columns. \`NULL\` skips correction.
+
+- subpop_col:
+
+  Subpopulation column for frequency summaries.
+
+- posthoc:
+
+  Post-hoc tests for three-or-more haplotypes.
+
+- n_perm, n_boot:
+
+  Permutation and bootstrap iterations.
+
+- min_cohens_d:
+
+  Minimum Cohen's d for the superior-haplotype gate.
+
+- alpha:
+
+  Significance threshold.
+
+- trait_threshold:
+
+  Absolute trait value required for the superior haplotype.
+
+- use_all_transcripts:
+
+  Use all transcripts or only the canonical one.
+
+- regions_to_include:
+
+  Functional regions for haplotype construction.
+
+- max_miss_snp, maf_min, max_het_ind, max_miss_ind:
+
+  QC thresholds.
+
+- min_individuals_qc:
+
+  Minimum individuals after QC.
+
+- min_ind_per_hap:
+
+  Minimum individuals per haplotype group.
+
+- min_hap_freq:
+
+  Minimum haplotype frequency.
+
+- ld_decay_distance:
+
+  Optional LD-decay distance in bp.
+
+- ld_decay_file:
+
+  Path to a saved LD-decay RDS from a previous run.
+
+- output_dir:
+
+  Output directory.
+
+- save_only_superior:
+
+  Write per-gene files only for superior genes.
+
+- keep_intergenic:
+
+  Keep LD regions with no overlapping gene.
+
+- figure_formats:
+
+  Figure output formats.
+
+- aa_full_names:
+
+  Use three-letter amino-acid codes.
+
+- gwas_snp_col, gwas_pos_col, gwas_chr_col:
+
+  Column names in \`gwas_snps\`.
+
+- require_fdr:
+
+  If \`TRUE\` (default) a gene is \`Is_Superior\` only if it also passes
+  BH-FDR (\< \`alpha\`) across the genes tested in this run.
+
+- plot_style:
+
+  One of \`"gene_list"\`, \`"per_gene"\`, \`"both"\`, \`"none"\`.
+
+- plot_palette:
+
+  One of \[hbr_palette_names()\].
+
+- plot_theme:
+
+  One of \[hbr_theme_names()\].
+
+- plot_table_style:
+
+  \`"color_coded"\` or \`"row_highlight"\`.
+
+- plot_panels:
+
+  Panels to draw.
+
+- plot_width, plot_height:
+
+  Figure dimensions in inches.
+
+- plot_combined_pdf:
+
+  Write a combined multi-page PDF.
+
+- go_enrichment:
+
+  Run GO enrichment and annotation.
+
+- go_enrichment_source:
+
+  One of \`"msu7"\` or \`"rapdb"\`.
+
+- go_enrichment_min_term, go_enrichment_min_superior:
+
+  Enrichment size gates.
+
+- go_enrichment_cache:
+
+  Cache directory for annotation downloads.
+
+- save_breeding_rds:
+
+  Save \`pipeline_result_for_breeding.rds\`.
+
+- rds_compress:
+
+  Compression of the RDS file(s). One of \`"fast"\`, \`"none"\`,
+  \`"xz"\`.
+
+- rds_reference:
+
+  Where the reference sequences are saved: \`"embedded"\` (inside the
+  breeding RDS), \`"separate"\` (a sibling \`pipeline_reference.rds\`),
+  or \`"none"\` (drop the sequences).
+
+- save_plot:
+
+  If \`FALSE\`, no figures are written.
+
+- store_all_results:
+
+  Retain every per-gene result. \`TRUE\` keeps the full per-gene object
+  for every tested gene; memory grows linearly with the number of genes.
+  Prefer the CSVs on disk unless the caller really needs every gene in
+  memory.
+
+- verbose:
+
+  Print progress. \`TRUE\` prints one concise status line per pipeline
+  phase and per gene; \`FALSE\` prints nothing except errors and
+  warnings.
+
+## Value
+
+Invisibly, a list with the pipeline result. Notable elements:
+
+- \`reference\`:
+
+  the \`hbr_reference\` object used, minus the genome FASTA if it was
+  not needed for plotting
+
+- \`geno_mat\`:
+
+  the \`hbr_genotype\` source (streaming or in-memory)
+
+- \`geno_ids\`:
+
+  character vector of the individuals that survived ID matching
+
+- \`superior_results\`:
+
+  list per superior gene: \`ns_result\`, \`geno_data\`, \`hap_mat\`,
+  \`hap_data\`, \`test_res\`, \`superior\`, \`sp_freq\`,
+  \`gene_annotation\`
+
+- \`summary\`, \`superior_summary\`, \`attrition\`:
+
+  per-gene tables also written to CSV
+
+- \`phenotype_data\`:
+
+  the cleaned ID + trait table actually used
+
+- \`functional_snps_all\`:
+
+  every functional SNP considered across all tested genes
+
+- \`gate_params\`:
+
+  the gate parameter list, so downstream tools can replay the gate
+  without re-parsing the summary
+
+## Examples
+
+``` r
+toy <- system.file("extdata", "toy", package = "HaploBreedR")
+res <- try(haplobreed_analysis(
+  plink_prefix     = file.path(toy, "toy"),
+  reference_source = "local",
+  gff3             = file.path(toy, "toy.gff3"),
+  cds              = file.path(toy, "toy.fa"),
+  gwas_snps        = read.csv(file.path(toy, "toy_gwas.csv")),
+  phenotype_data   = read.csv(file.path(toy, "toy_pheno.csv")),
+  trait_col        = "trait",
+  direction        = "higher",
+  output_dir       = tempdir(),
+  save_plot        = FALSE,
+  n_perm           = 100L,
+  n_boot           = 100L,
+  verbose          = FALSE))
+#> Error : Reference missing CDS or peptide sequences.
+```

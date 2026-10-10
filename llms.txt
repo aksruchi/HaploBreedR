@@ -1,0 +1,166 @@
+An end-to-end quantitative genomics and molecular breeding suite for
+crops. Identifies superior functional haplotypes from coding variants
+under false discovery rate control and conducts haplotype-guided genomic
+selection, analytical cross usefulness prediction, and linkage-aware
+pyramiding optimization.
+
+# Package index
+
+## Pipeline: Superior Haplotype Discovery
+
+End-to-end and modular tools for functional variant identification,
+intragenic haplotype assembly, association testing, and gate
+re-application. See
+[`haplobreed_analysis()`](https://github.com/aksruchi/HaploBreedR/reference/haplobreed_analysis.md)
+for the single-trait pipeline; the remaining functions are the per-step
+entry points.
+
+- [`haplobreed_analysis()`](https://github.com/aksruchi/HaploBreedR/reference/haplobreed_analysis.md)
+  : Single-trait identification of genes carrying superior haplotypes
+- [`hbr_check_inputs()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_check_inputs.md)
+  : Pre-flight Validation of Inputs
+- [`hbr_generate_input_qc_report()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_generate_input_qc_report.md)
+  : Generate a unified input-QC report
+- [`hbr_read_results()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_read_results.md)
+  : Read HaploBreedR Pipeline Results from Disk
+- [`hbr_gene_carriers()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_gene_carriers.md)
+  : Carrier status of the superior haplotype at a gene
+- [`hbr_regate()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_regate.md)
+  : Re-apply Superior Haplotype Gates (Sensitivity Analysis)
+
+## Genomic Selection & Breeding Decisions (HGSI)
+
+Two-kernel spectral REML prediction, cross usefulness, multi-locus
+pyramiding, haplotype-block calling, and parent-set optimization.
+[`hbr_fit_models()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_fit_models.md)
+and
+[`hbr_cross_design()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_cross_design.md)
+are the two halves of the pipeline;
+[`hbr_advanced_decision()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_advanced_decision.md)
+runs them end to end.
+
+- [`hbr_advanced_decision()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_advanced_decision.md)
+  : Breeding decisions from HaploBreedR output
+- [`hbr_fit_models()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_fit_models.md)
+  : Fit genomic prediction models and rank parents
+- [`hbr_cross_design()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_cross_design.md)
+  : Design crosses from a fitted model
+- [`hbr_cross_plan()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_cross_plan.md)
+  : Interactive Cross Query Planning
+- [`hbr_cross_usefulness()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_cross_usefulness.md)
+  : Analytical Cross Usefulness
+- [`hbr_haplotype_blocks()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_haplotype_blocks.md)
+  : Standalone Haplotype Block Calling
+- [`hbr_haplotype_block_table()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_haplotype_block_table.md)
+  : Haplotype block table from a set of target loci
+- [`hbr_pyramid_probability()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_pyramid_probability.md)
+  : Haplotype Pyramiding Probability
+- [`hbr_population_size()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_population_size.md)
+  : Population Size for Recombinant Recovery
+- [`hbr_build_grm()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_build_grm.md)
+  : Streamed Genomic Relationship Matrix
+- [`hbr_reml_two_kernel()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_reml_two_kernel.md)
+  : Spectral Two-Kernel REML
+- [`hbr_trait_conflicts()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_trait_conflicts.md)
+  : Multi-Trait Haplotype Breeding Conflicts
+
+## Publication Figures & Visualisation
+
+High-level ggplot2 publication graphics for candidate genes, haplotype
+networks, gene models, LD structure, cross rankings, and model
+validation.
+
+- [`hbr_plot_haplotype()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_plot_haplotype.md)
+  : Plot haplotype boxplot with summary table
+- [`hbr_plot_gene_structure()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_plot_gene_structure.md)
+  : Plot gene structure for one or more genes
+- [`hbr_plot_haplotype_network()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_plot_haplotype_network.md)
+  : Plot a haplotype network for one or more genes
+- [`hbr_plot_cross_ranking()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_plot_cross_ranking.md)
+  : Plot cross ranking by usefulness vs mid-parent index
+- [`hbr_plot_cv_forest()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_plot_cv_forest.md)
+  : Forest plot of cross-validation comparisons
+
+## Variant Annotation & Population Genetics
+
+LD decay estimation, GFF3 gene parsing, genomic-region interval
+intersection, and GO term over-representation.
+
+- [`hbr_annotate_regions_with_genes()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_annotate_regions_with_genes.md)
+  : Annotate LD regions with genes
+- [`hbr_read_gff3_genes()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_read_gff3_genes.md)
+  : Parse gene features from a GFF3 into a data.table
+- [`hbr_go_enrichment()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_go_enrichment.md)
+  : GO term enrichment across a set of genes
+
+## Manuscript Tables & Reporting
+
+Formatted multi-sheet Excel manuscript tables built from a single
+pipeline run.
+
+- [`hbr_build_manuscript_tables()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_build_manuscript_tables.md)
+  : Build a manuscript-ready multi-sheet Excel workbook from a pipeline
+  run
+
+## Reference Data, Themes & Lookups
+
+Genetic linkage maps, crop genome metadata, colour palettes, and ggplot2
+themes shipped with the package.
+
+- [`hbr_rice_genetic_map()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_rice_genetic_map.md)
+  : Bundled rice genetic map anchors
+- [`hbr_crop_lookup()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_crop_lookup.md)
+  : Common crops mapped to their Ensembl Plants species and assembly
+- [`hbr_palette()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_palette.md)
+  : Return \`n\` colours from a named palette
+- [`hbr_palette_names()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_palette_names.md)
+  : Names of the built-in colour palettes
+- [`hbr_theme()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_theme.md)
+  : Return a named HaploBreedR ggplot2 theme
+- [`hbr_theme_names()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_theme_names.md)
+  : Names of the built-in ggplot2 themes
+
+## S3 methods for pipeline and fit objects
+
+Print, summary, and plot methods for the classed objects the pipeline
+returns.
+
+- [`print(`*`<hbr_run>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hbr_run.md)
+  : Print an hbr_run object
+- [`summary(`*`<hbr_run>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/summary.hbr_run.md)
+  : Summary of an hbr_run object
+- [`plot(`*`<hbr_run>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/plot.hbr_run.md)
+  : Plot an hbr_run object
+- [`print(`*`<hgsi_fit>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hgsi_fit.md)
+  : Print an hgsi_fit object
+- [`summary(`*`<hgsi_fit>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/summary.hgsi_fit.md)
+  : Summarise an hgsi_fit object
+- [`print(`*`<hgsi_advanced>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hgsi_advanced.md)
+  : Print an hgsi_advanced object
+- [`summary(`*`<hgsi_advanced>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/summary.hgsi_advanced.md)
+  : Summarise an hgsi_advanced object
+- [`plot(`*`<hgsi_advanced>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/plot.hgsi_advanced.md)
+  : Plot an hgsi_advanced object
+
+## S3 methods for reference and QC objects
+
+Print methods for the small classed objects returned by the input
+validation and reference-loading layers.
+
+- [`print(`*`<hbr_reference>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hbr_reference.md)
+  : Print an hbr_reference object
+- [`print(`*`<hbr_sequence_qc>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hbr_sequence_qc.md)
+  : Print a sequence-resource QC report
+- [`print(`*`<hbr_compat_report>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hbr_compat_report.md)
+  : Print a genotype-reference compatibility report
+- [`print(`*`<hbr_id_report>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hbr_id_report.md)
+  : Print an individual-ID match report
+- [`print(`*`<hbr_genotype>`*`)`](https://github.com/aksruchi/HaploBreedR/reference/print.hbr_genotype.md)
+  : Print an hbr_genotype object
+
+# Articles
+
+### Get started
+
+- [HaploBreedR: haplotype-based breeding
+  decisions](https://github.com/aksruchi/HaploBreedR/articles/HaploBreedR.md):
