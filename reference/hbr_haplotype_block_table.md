@@ -35,25 +35,20 @@ hbr_haplotype_block_table(
 
 - plink_prefix:
 
-  Character. PLINK file prefix. Required by the SNP-level methods
-  (\`"fourgamete"\`, \`"gabriel"\`) and their combinations; ignored
-  otherwise.
+  PLINK prefix, or an \`hbr_run\` object (in which case the run-level
+  API is used). When the first positional argument is an \`hbr_run\`,
+  this argument receives it.
 
 - units:
 
-  Data.frame with columns \`chr\` and \`cm\`, and optionally \`snp_col\`
-  (PLINK column index of the locus's own SNP, needed by \`"fourgamete"\`
-  and \`"gabriel"\`).
+  Low-level API: data.frame with \`chr\` and \`cm\` per target locus,
+  and \`snp_col\` when using the SNP-level methods. Alternatively, an
+  \`hbr_run\` object (in which case the run-level API is used).
 
-- cm_snp:
+- cm_snp, chr_snp:
 
-  Numeric vector of genetic positions per SNP in the PLINK file.
-  Required by the SNP-level methods.
-
-- chr_snp:
-
-  Character vector of chromosomes per SNP in the PLINK file. Required by
-  the SNP-level methods.
+  Low-level API: genetic positions and chromosomes of every SNP in the
+  PLINK file.
 
 - traits:
 
@@ -63,63 +58,38 @@ hbr_haplotype_block_table(
 
 - method:
 
-  Block method, one of \`"recomb"\`, \`"ld"\`, \`"either"\`,
-  \`"fourgamete"\`, \`"gabriel"\`, \`"recomb+gabriel"\`,
-  \`"recomb+fourgamete"\`.
+  One of the seven methods above.
 
-- flank_cM:
+- flank_cM, max_snps, min_gamete:
 
-  Numeric. Window (+/- cM) around each cluster of target loci from which
-  SNPs are read, for SNP-level methods.
-
-- max_snps:
-
-  Integer. Maximum SNPs per cluster after thinning.
+  SNP-level methods only: window around the genes, SNPs kept per
+  cluster, and gamete frequency that counts as recombination.
 
 - max_span_cM:
 
-  Numeric. Largest distance between the first and last locus of a block
-  (cM). Chaining cannot build blocks longer than this.
-
-- min_gamete:
-
-  Numeric. Four-gamete frequency that counts as evidence of
-  recombination (Haploview default 0.01).
+  Largest distance between the first and last locus of a block.
 
 - maf_min:
 
-  Numeric. Minimum minor allele frequency for a SNP to enter the block
-  search.
+  Minimum minor-allele frequency.
 
 - rmax:
 
-  Numeric. Maximum recombination fraction between neighbouring loci for
-  \`"recomb"\` and \`"either"\` (default 0.01, about 1 cM).
+  Maximum Haldane recombination fraction between neighbours for
+  \`"recomb"\`.
 
 - r2:
 
-  Numeric. Minimum r^2 of carrier indicators to join neighbours under
-  \`"ld"\` and \`"either"\`.
+  Minimum carrier-indicator r-squared for \`"ld"\`.
 
 - ld_max_cM:
 
-  Numeric. Largest distance over which LD may join neighbours (cM).
+  Largest distance over which LD may join neighbours.
 
-- r2_min:
+- r2_min, gabriel_grid, carry:
 
-  Numeric. Reserved for a future version; currently not wired into the
-  SNP-level block callers (the four-gamete rule and the full Gabriel D'
-  test are applied directly to every pair).
-
-- gabriel_grid:
-
-  Integer. Reserved for a future version; currently not wired into the
-  SNP-level block callers.
-
-- carry:
-
-  Logical matrix individuals x target loci. Required by \`"ld"\` and
-  \`"either"\`; ignored otherwise.
+  Reserved for future versions; kept for backward compatibility with the
+  low-level API.
 
 ## Value
 

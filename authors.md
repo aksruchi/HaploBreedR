@@ -12,12 +12,12 @@ Source:
 
 Singh D (2026). *HaploBreedR: High-Resolution Functional Haplotype
 Discovery and Genomic Selection*. R package version 0.99.1,
-<https://github.com/aksruchi/HaploBreedR>.
+<https://aksruchi.github.io/HaploBreedR>.
 
     @Manual{,
       title = {HaploBreedR: High-Resolution Functional Haplotype Discovery and Genomic Selection},
       author = {Dr. Akansha Singh},
       year = {2026},
       note = {R package version 0.99.1},
-      url = {https://github.com/aksruchi/HaploBreedR},
+      url = {https://aksruchi.github.io/HaploBreedR},
     }

@@ -1,19 +1,15 @@
-# Standalone Haplotype Block Calling
+# Haplotype blocks of target loci
 
-Partitions a set of target loci into haplotype blocks by any of the
-methods the pipeline uses: map-based recombination between the loci
-(\`"recomb"\`), LD between their carrier indicators (\`"ld"\`), the
-union of both (\`"either"\`), SNP-level methods around each target
-cluster (\`"fourgamete"\`, \`"gabriel"\`), or the union of a map method
-and an SNP method (\`"recomb+gabriel"\`, \`"recomb+fourgamete"\`).
-Blocks never span chromosomes and never exceed \`max_span_cM\`.
+Groups a set of target loci into haplotype blocks by one of seven
+methods and reports the block assignment. Two calling conventions are
+supported.
 
 ## Usage
 
 ``` r
 hbr_haplotype_blocks(
   plink_prefix = NULL,
-  units,
+  units = NULL,
   cm_snp = NULL,
   chr_snp = NULL,
   method = c("recomb", "ld", "either", "fourgamete", "gabriel", "recomb+gabriel",
@@ -28,7 +24,10 @@ hbr_haplotype_blocks(
   ld_max_cM = 3,
   r2_min = 0.25,
   gabriel_grid = 21L,
-  carry = NULL
+  carry = NULL,
+  genetic_map = NULL,
+  cM_per_Mb = NULL,
+  verbose = FALSE
 )
 ```
 
@@ -36,97 +35,158 @@ hbr_haplotype_blocks(
 
 - plink_prefix:
 
-  Character. PLINK file prefix. Required by the SNP-level methods
-  (\`"fourgamete"\`, \`"gabriel"\`) and their combinations; ignored
-  otherwise.
+  PLINK prefix, or an \`hbr_run\` object (in which case the run-level
+  API is used). When the first positional argument is an \`hbr_run\`,
+  this argument receives it.
 
 - units:
 
-  Data.frame with columns \`chr\` and \`cm\`, and optionally \`snp_col\`
-  (PLINK column index of the locus's own SNP, needed by \`"fourgamete"\`
-  and \`"gabriel"\`).
+  Low-level API: data.frame with \`chr\` and \`cm\` per target locus,
+  and \`snp_col\` when using the SNP-level methods. Alternatively, an
+  \`hbr_run\` object (in which case the run-level API is used).
 
-- cm_snp:
+- cm_snp, chr_snp:
 
-  Numeric vector of genetic positions per SNP in the PLINK file.
-  Required by the SNP-level methods.
-
-- chr_snp:
-
-  Character vector of chromosomes per SNP in the PLINK file. Required by
-  the SNP-level methods.
+  Low-level API: genetic positions and chromosomes of every SNP in the
+  PLINK file.
 
 - method:
 
-  Block method, one of \`"recomb"\`, \`"ld"\`, \`"either"\`,
-  \`"fourgamete"\`, \`"gabriel"\`, \`"recomb+gabriel"\`,
-  \`"recomb+fourgamete"\`.
+  One of the seven methods above.
 
-- flank_cM:
+- flank_cM, max_snps, min_gamete:
 
-  Numeric. Window (+/- cM) around each cluster of target loci from which
-  SNPs are read, for SNP-level methods.
-
-- max_snps:
-
-  Integer. Maximum SNPs per cluster after thinning.
+  SNP-level methods only: window around the genes, SNPs kept per
+  cluster, and gamete frequency that counts as recombination.
 
 - max_span_cM:
 
-  Numeric. Largest distance between the first and last locus of a block
-  (cM). Chaining cannot build blocks longer than this.
-
-- min_gamete:
-
-  Numeric. Four-gamete frequency that counts as evidence of
-  recombination (Haploview default 0.01).
+  Largest distance between the first and last locus of a block.
 
 - maf_min:
 
-  Numeric. Minimum minor allele frequency for a SNP to enter the block
-  search.
+  Minimum minor-allele frequency.
 
 - rmax:
 
-  Numeric. Maximum recombination fraction between neighbouring loci for
-  \`"recomb"\` and \`"either"\` (default 0.01, about 1 cM).
+  Maximum Haldane recombination fraction between neighbours for
+  \`"recomb"\`.
 
 - r2:
 
-  Numeric. Minimum r^2 of carrier indicators to join neighbours under
-  \`"ld"\` and \`"either"\`.
+  Minimum carrier-indicator r-squared for \`"ld"\`.
 
 - ld_max_cM:
 
-  Numeric. Largest distance over which LD may join neighbours (cM).
+  Largest distance over which LD may join neighbours.
 
-- r2_min:
+- r2_min, gabriel_grid, carry:
 
-  Numeric. Reserved for a future version; currently not wired into the
-  SNP-level block callers (the four-gamete rule and the full Gabriel D'
-  test are applied directly to every pair).
+  Reserved for future versions; kept for backward compatibility with the
+  low-level API.
 
-- gabriel_grid:
+- genetic_map, cM_per_Mb:
 
-  Integer. Reserved for a future version; currently not wired into the
-  SNP-level block callers.
+  Genetic positions for the run-level API: a data.frame with \`chr\`,
+  \`bp\`, \`cm\` (for example \[hbr_rice_genetic_map()\]), or a constant
+  rate. A \`.bim\` with an informative cM column is used when neither is
+  supplied.
 
-- carry:
+- verbose:
 
-  Logical matrix individuals x target loci. Required by \`"ld"\` and
-  \`"either"\`; ignored otherwise.
+  Print progress.
 
 ## Value
 
-Integer vector of block IDs per target locus, with attribute
-\`"clusters"\` giving the SNP windows used by SNP-level methods (or
-\`NULL\`).
+For the low-level API, an integer vector of block IDs per row of
+\`units\`. For the run-level API, an object of class \`hbr_blocks\` with
+elements \`blocks\`, \`units\`, \`lines\`, \`full\`, \`snp_clusters\`,
+\`settings\` and \`map_source\`.
+
+## Details
+
+\*\*Low-level.\*\* Supply \`plink_prefix\`, \`units\`, \`cm_snp\` and
+\`chr_snp\` directly. \`units\` must carry \`chr\`, \`cm\` and (for the
+SNP-level methods) \`snp_col\`; \`cm_snp\` and \`chr_snp\` give the
+genetic and physical position of every SNP in the PLINK file. The
+function returns an integer vector of block IDs per row of \`units\`.
+This is the legacy API and is fully backward compatible.
+
+\*\*Run-level.\*\* Pass an \`hbr_run\` (from \[hbr_read_results()\]) as
+the first positional argument or as \`plink_prefix\`. The function reads
+the superior haplotypes, rebuilds the codes, replays the discovery gate
+to pick the best haplotype per gene, places each at its genetic map
+position, and returns a classed \`hbr_blocks\` object with the block
+table, the per-line carrier matrix, and (for SNP-level methods) the SNP
+windows used.
+
+The seven block methods are:
+
+- \`"recomb"\`:
+
+  Join neighbours whose Haldane recombination fraction is at most
+  \`rmax\`. Describes the recombination expected in a new cross.
+
+- \`"ld"\`:
+
+  Join neighbours whose carrier indicators have r-squared at least
+  \`r2\` within \`ld_max_cM\`. Describes LD in the panel.
+
+- \`"either"\`:
+
+  Union of \`"recomb"\` and \`"ld"\`.
+
+- \`"fourgamete"\`:
+
+  Four-gamete rule on the SNPs around the genes (Wang et al. 2002;
+  Haploview default).
+
+- \`"gabriel"\`:
+
+  Gabriel-type D-prime confidence intervals (Gabriel et al. 2002).
+
+- \`"recomb+gabriel"\`:
+
+  Union of \`"recomb"\` and \`"gabriel"\`, then capped at
+  \`max_span_cM\`.
+
+- \`"recomb+fourgamete"\`:
+
+  Union of \`"recomb"\` and \`"fourgamete"\`, then capped.
+
+Blocks never span chromosomes. \`"recomb"\`, \`"ld"\` and \`"either"\`
+operate on the loci directly; the SNP-level methods read a window of
+\`flank_cM\` around each cluster of target genes.
+
+## See also
+
+\[hbr_read_results()\] to build the run input,
+\[hbr_haplotype_block_table()\] for the legacy low-level wrapper.
 
 ## Examples
 
 ``` r
+# Legacy low-level API — no genotypes needed for the map methods
 units <- data.frame(chr = c("1", "1", "1", "2", "2"),
                     cm  = c(10, 10.5, 50, 5, 5.2))
 hbr_haplotype_blocks(method = "recomb", units = units)
 #> [1] 1 1 2 3 3
+
+# Run-level API on the bundled toy data
+toy <- system.file("extdata", "hgsi_toy", package = "HaploBreedR")
+if (nzchar(toy) && dir.exists(toy) &&
+    requireNamespace("BEDMatrix", quietly = TRUE)) {
+  run <- hbr_read_results(file.path(toy, "trait_YLD"))
+  blk <- hbr_haplotype_blocks(
+    run, plink_prefix = file.path(toy, "geno_toy"),
+    method = "recomb")
+  blk$blocks
+}
+#>   using bundled rice genetic map (Harushima 1998 / RGP); pass `genetic_map = "none"` to disable
+#>   block chr start_cM end_cM n_target_haplotypes n_genes  genes traits
+#> 1 HB001   2      0.0    0.0                   1       1 GENE04    YLD
+#> 2 HB002   3      1.1    1.1                   1       1 GENE07    YLD
+#>   panel_freq
+#> 1     0.1667
+#> 2     0.3333
 ```

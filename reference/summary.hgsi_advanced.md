@@ -52,7 +52,7 @@ summary(x)
 #>   parents      : 5 ranked
 #>   crosses      : 1
 #>   map source   : bundled rice map
-#>   output       : /tmp/RtmpVspFCk
+#>   output       : /tmp/RtmpUZfv4q
 #> 
 #> Cross-validation summary:
 #>  trait method   r

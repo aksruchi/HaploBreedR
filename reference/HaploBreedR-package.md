@@ -15,9 +15,9 @@ sequentially.
 ## Function length
 
 The package deliberately keeps several long orchestration functions
-([`haplobreed_analysis()`](https://github.com/aksruchi/HaploBreedR/reference/haplobreed_analysis.md)
+([`haplobreed_analysis()`](https://aksruchi.github.io/HaploBreedR/reference/haplobreed_analysis.md)
 and
-[`hbr_advanced_decision()`](https://github.com/aksruchi/HaploBreedR/reference/hbr_advanced_decision.md))
+[`hbr_advanced_decision()`](https://aksruchi.github.io/HaploBreedR/reference/hbr_advanced_decision.md))
 as single entry points. Splitting them would require passing dozens of
 intermediate objects between helpers, which increases coupling without
 improving readability. All internal helpers are shorter than 50 lines.
@@ -26,7 +26,7 @@ improving readability. All internal helpers are shorter than 50 lines.
 
 Useful links:
 
-- <https://github.com/aksruchi/HaploBreedR>
+- <https://aksruchi.github.io/HaploBreedR>
 
 - Report bugs at <https://github.com/aksruchi/HaploBreedR/issues>
 
