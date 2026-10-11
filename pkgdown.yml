@@ -3,7 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   HaploBreedR: HaploBreedR.html
-last_built: 2026-10-11T06:50Z
+last_built: 2026-10-11T06:55Z
 urls:
   reference: https://aksruchi.github.io/HaploBreedR/reference
   article: https://aksruchi.github.io/HaploBreedR/articles

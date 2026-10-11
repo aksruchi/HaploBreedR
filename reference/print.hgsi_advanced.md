@@ -50,5 +50,5 @@ print(x)
 #>   parents      : 5 ranked
 #>   crosses      : 1
 #>   map source   : bundled rice map
-#>   output       : /tmp/RtmpUZfv4q
+#>   output       : /tmp/Rtmp7NFamH
 ```
