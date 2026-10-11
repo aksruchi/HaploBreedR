@@ -47,7 +47,7 @@ summary(fit)
 #>   models       : YLD=gblup
 #>   n individuals: 5
 #>   parents      : 5 ranked
-#>   fit file     : /tmp/RtmpZq5roG/hgsi_fit.rds
+#>   fit file     : /tmp/RtmpvynQ7I/hgsi_fit.rds
 #> 
 #> Cross-validation summary:
 #>  trait method   r
