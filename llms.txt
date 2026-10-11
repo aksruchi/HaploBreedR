@@ -1,4 +1,4 @@
-# HaploBreedR ![HaploBreedR logo](reference/figures/logo.png)
+# HaploBreedR
 
 **Superior haplotype discovery and haplotype-guided genomic selection
 for crop breeding.**
