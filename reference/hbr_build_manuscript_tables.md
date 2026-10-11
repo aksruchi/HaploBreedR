@@ -140,9 +140,9 @@ suppressWarnings(
 #> ====================================================================
 #> MANUSCRIPT TABLES
 #> ====================================================================
-#>   RDS   : /tmp/RtmpMVtYZB/fake_result.rds 
-#>   Dir   : /tmp/RtmpMVtYZB 
-#>   Out   : /tmp/RtmpMVtYZB/tables.xlsx 
+#>   RDS   : /tmp/RtmpCezBXG/fake_result.rds 
+#>   Dir   : /tmp/RtmpCezBXG 
+#>   Out   : /tmp/RtmpCezBXG/tables.xlsx 
 #>   Trait : GY 
 #>   Profile: manuscript 
 #> 
