@@ -14,9 +14,11 @@ relatedness ceiling.
 
 📊 **[One-page
 infographic](https://aksruchi.github.io/HaploBreedR/infographic.html)**
-— the pipeline at a glance.
-
-------------------------------------------------------------------------
+— the pipeline at a glance. 📊 **[One-page
+infographic](https://aksruchi.github.io/HaploBreedR/infographic.html)**
+([print
+TIFF](https://aksruchi.github.io/HaploBreedR/reference/figures/HaploBreedR_infographic.tiff))
+— the pipeline at a glance. —
 
 ## Installation
 
